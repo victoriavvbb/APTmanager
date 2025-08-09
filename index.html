@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APT Manager - Gestión Inteligente de Residenciales</title>
+    <meta name="description" content="Plataforma completa para la gestión de apartamentos, inquilinos, pagos y áreas comunes. Perfecta para residenciales tradicionales y propiedades Airbnb.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for smooth transitions */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Background image overlay */
+        .hero-bg {
+            background-image: url('/assets/michal-gadek-TNTeoZsIIzc-unsplash-DClgFh2f.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .hero-overlay {
+            background: linear-gradient(135deg, rgba(245, 245, 244, 0.95) 0%, rgba(240, 253, 250, 0.9) 100%);
+        }
+        
+        .dark .hero-overlay {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 dark:bg-gray-900 text-teal-800 dark:text-teal-100 transition-colors duration-300">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-teal-100 dark:border-gray-700">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="building-2" class="h-8 w-8 text-teal-600"></i>
+                    <span class="text-xl font-bold text-teal-800 dark:text-teal-100">APT Manager</span>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#dashboard" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Dashboard
+                    </a>
+                    <a href="#gallery" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Galería
+                    </a>
+                    <a href="#about" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Nosotros
+                    </a>
+                    <a href="#contact" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Contacto
+                    </a>
+                    <button id="theme-toggle" class="p-2 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900 rounded-lg transition-colors" aria-label="Cambiar tema">
+                        <i data-lucide="moon" class="h-4 w-4 dark:hidden"></i>
+                        <i data-lucide="sun" class="h-4 w-4 hidden dark:block"></i>
+                    </button>
+                </nav>
+
+                <div class="md:hidden flex items-center space-x-2">
+                    <button id="theme-toggle-mobile" class="p-2 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900 rounded-lg transition-colors" aria-label="Cambiar tema">
+                        <i data-lucide="moon" class="h-4 w-4 dark:hidden"></i>
+                        <i data-lucide="sun" class="h-4 w-4 hidden dark:block"></i>
+                    </button>
+                    <button id="mobile-menu-toggle" class="p-2 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900 rounded-lg transition-colors" aria-label="Abrir menú">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden py-4 border-t border-teal-100 dark:border-gray-700 hidden">
+                <nav class="flex flex-col space-y-4">
+                    <a href="#dashboard" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Dashboard
+                    </a>
+                    <a href="#gallery" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Galería
+                    </a>
+                    <a href="#about" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Nosotros
+                    </a>
+                    <a href="#contact" class="text-teal-700 dark:text-teal-200 hover:text-teal-600 dark:hover:text-teal-100 transition-colors">
+                        Contacto
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 lg:py-32 hero-bg overflow-hidden">
+        <div class="absolute inset-0 hero-overlay"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <span class="inline-block bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-100 px-3 py-1 rounded-full text-sm font-medium">
+                            Gestión Inteligente de Residenciales
+                        </span>
+                        <h1 class="text-4xl lg:text-6xl font-bold text-teal-900 dark:text-teal-50 leading-tight">
+                            Administra tu residencial de forma 
+                            <span class="text-teal-600 dark:text-teal-400">inteligente</span>
+                        </h1>
+                        <p class="text-xl text-teal-700 dark:text-teal-200 leading-relaxed">
+                            Plataforma completa para la gestión de apartamentos, inquilinos, pagos y áreas comunes. Perfecta para residenciales tradicionales y propiedades Airbnb.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="btn-primary px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">
+                            Comenzar Gratis
+                        </button>
+                        <button class="px-6 py-3 border border-teal-600 text-teal-600 hover:bg-teal-50 dark:border-teal-400 dark:text-teal-400 dark:hover:bg-teal-900 bg-transparent font-medium rounded-lg transition-colors">
+                            Ver Demo
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-8 pt-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-teal-800 dark:text-teal-200" data-stat="residenciales">500+</div>
+                            <div class="text-sm text-teal-600 dark:text-teal-400">Residenciales</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-teal-800 dark:text-teal-200" data-stat="usuarios">10K+</div>
+                            <div class="text-sm text-teal-600 dark:text-teal-400">Usuarios</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-teal-800 dark:text-teal-200" data-stat="uptime">99.9%</div>
+                            <div class="text-sm text-teal-600 dark:text-teal-400">Uptime</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="hero-card bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                        <div class="bg-teal-600 rounded-lg p-4 mb-4">
+                            <div class="flex items-center justify-between text-white mb-2">
+                                <span class="font-semibold">Dashboard Principal</span>
+                                <i data-lucide="bell" class="h-5 w-5"></i>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-white text-sm">
+                                <div>Pagos: $45,230</div>
+                                <div>Ocupación: 94%</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-stone-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="credit-card" class="h-5 w-5 text-teal-600"></i>
+                                    <span class="text-sm font-medium">Pagos Pendientes</span>
+                                </div>
+                                <span class="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 px-2 py-1 rounded-full text-xs font-medium">3</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-stone-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="wrench" class="h-5 w-5 text-teal-600"></i>
+                                    <span class="text-sm font-medium">Mantenimiento</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-full text-xs font-medium">2</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-stone-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="calendar" class="h-5 w-5 text-teal-600"></i>
+                                    <span class="text-sm font-medium">Reservas Hoy</span>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded-full text-xs font-medium">5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section id="dashboard" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-teal-900 dark:text-teal-50 mb-4">
+                    Dashboard Completo para Administradores y Residentes
+                </h2>
+                <p class="text-xl text-teal-700 dark:text-teal-200 max-w-3xl mx-auto">
+                    Interfaz intuitiva y moderna que facilita la gestión diaria de tu residencial
+                </p>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-8 text-center">
+                    Panel de Administrador
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Card 1 -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <i data-lucide="users" class="h-8 w-8 text-teal-600"></i>
+                            <span class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-full text-xs font-medium">+12%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-1">248</div>
+                        <div class="text-teal-600 dark:text-teal-400 text-sm">Inquilinos Activos</div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <i data-lucide="credit-card" class="h-8 w-8 text-teal-600"></i>
+                            <span class="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded-full text-xs font-medium">$45K</span>
+                        </div>
+                        <div class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-1">94%</div>
+                        <div class="text-teal-600 dark:text-teal-400 text-sm">Pagos al Día</div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <i data-lucide="wrench" class="h-8 w-8 text-teal-600"></i>
+                            <span class="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 px-2 py-1 rounded-full text-xs font-medium">5 Pendientes</span>
+                        </div>
+                        <div class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-1">23</div>
+                        <div class="text-teal-600 dark:text-teal-400 text-sm">Solicitudes Mes</div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <i data-lucide="calendar" class="h-8 w-8 text-teal-600"></i>
+                            <span class="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100 px-2 py-1 rounded-full text-xs font-medium">Hoy: 8</span>
+                        </div>
+                        <div class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-1">156</div>
+                        <div class="text-teal-600 dark:text-teal-400 text-sm">Reservas Mes</div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Chart Card -->
+                    <div class="lg:col-span-2 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i data-lucide="bar-chart-3" class="h-5 w-5 text-teal-600"></i>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Ingresos Mensuales</h3>
+                        </div>      
+                                                  
+                        <div class="h-48 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-gray-600 dark:to-gray-500 rounded-lg flex items-center justify-center">
+                            <img src="/assets/grafico_ingresos-BXzlmavN.jpg"
+                            style="width: 100%; height: 100%; object-fit: cover; object-position: left;">
+                            <div class="text-center">
+                                <i data-lucide="bar-chart-3" class="h-16 w-16 text-teal-400 mx-auto mb-2"></i>
+
+                                <p class="text-teal-600 dark:text-teal-400">Gráfico de Ingresos Interactivo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Card -->
+                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i data-lucide="bell" class="h-5 w-5 text-teal-600"></i>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Notificaciones</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                                <div class="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-teal-800 dark:text-teal-200">Pago Vencido</p>
+                                    <p class="text-xs text-teal-600 dark:text-teal-400">Apt 304 - $1,200</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-teal-800 dark:text-teal-200">Nueva Reserva</p>
+                                    <p class="text-xs text-teal-600 dark:text-teal-400">Salón - Mañana 6PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-teal-800 dark:text-teal-200">Mantenimiento</p>
+                                    <p class="text-xs text-teal-600 dark:text-teal-400">Ascensor reparado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resident Dashboard -->
+            <div>
+                <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-8 text-center">
+                    Panel de Residente
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Payments Card -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i data-lucide="credit-card" class="h-5 w-5 text-teal-600"></i>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Mis Pagos</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-teal-600 dark:text-teal-400">Próximo pago</span>
+                                <span class="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 px-2 py-1 rounded-full text-xs font-medium">15 Dic</span>
+                            </div>
+                            <div class="text-2xl font-bold text-teal-800 dark:text-teal-200">$1,200</div>
+                            <button class="w-full px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">
+                                Pagar Ahora
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reservations Card -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i data-lucide="calendar" class="h-5 w-5 text-teal-600"></i>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Reservar Áreas</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-teal-600 dark:text-teal-400">Salón Social</span>
+                                    <span class="text-green-600 dark:text-green-400">Disponible</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-teal-600 dark:text-teal-400">Gimnasio</span>
+                                    <span class="text-green-600 dark:text-green-400">Disponible</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-teal-600 dark:text-teal-400">Piscina</span>
+                                    <span class="text-red-600 dark:text-red-400">Ocupada</span>
+                                </div>
+                            </div>
+                            <button class="w-full px-4 py-2 border border-teal-600 text-teal-600 hover:bg-teal-50 dark:border-teal-400 dark:text-teal-400 dark:hover:bg-teal-900 bg-transparent font-medium rounded-lg transition-colors">
+                                Ver Calendario
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reports Card -->
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i data-lucide="camera" class="h-5 w-5 text-teal-600"></i>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Reportar Problema</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="text-sm text-teal-600 dark:text-teal-400">
+                                Reporta incidencias con fotos y descripción detallada
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-teal-500 dark:text-teal-400">
+                                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                                <span>Ubicación automática</span>
+                            </div>
+                            <button class="w-full px-4 py-2 border border-teal-600 text-teal-600 hover:bg-teal-50 dark:border-teal-400 dark:text-teal-400 dark:hover:bg-teal-900 bg-transparent font-medium rounded-lg transition-colors">
+                                Nuevo Reporte
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-8 text-center">
+                    Funcionalidades Avanzadas
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                <i data-lucide="message-square" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Chat Interno</h3>
+                        </div>
+                        <p class="text-teal-600 dark:text-teal-400">
+                            Comunicación directa entre administración y residentes en tiempo real
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                <i data-lucide="qr-code" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Acceso QR</h3>
+                        </div>
+                        <p class="text-teal-600 dark:text-teal-400">
+                            Control de acceso y registro de visitantes mediante códigos QR
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card bg-white dark:bg-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-teal-100 dark:border-gray-600 p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                <i data-lucide="map-pin" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-teal-800 dark:text-teal-200">Mapas Interactivos</h3>
+                        </div>
+                        <p class="text-teal-600 dark:text-teal-400">
+                            Vista del plano del residencial para reservas y reportes ubicados
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-stone-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-teal-900 dark:text-teal-50 mb-4">
+                    Galería de Residenciales
+                </h2>
+                <p class="text-xl text-teal-700 dark:text-teal-200 max-w-3xl mx-auto">
+                    Descubre los residenciales más modernos y bien gestionados con APT Manager
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <img src="/assets/piscina-unsplash-Dryolv3P.jpg" 
+                         alt="Residencial moderno con piscina y áreas verdes" 
+                         class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-teal-900 bg-opacity-75 text-white p-4">
+                        <h3 class="text-lg font-bold mb-2">Residencial Moderno</h3>
+                        <p class="text-sm">Ubicación: Paraiso, Barahora, R.D.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <img src="/assets/traditional-unsplash-CvFdkPhA.jpg" 
+                         alt="Residencial tradicional con áreas comunes bien mantenidas" 
+                         class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-teal-900 bg-opacity-75 text-white p-4">
+                        <h3 class="text-lg font-bold mb-2">Residencial Tradicional</h3>
+                        <p class="text-sm">Ubicación: Jarabacoa, Republica Dominicana</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <img src="/assets/airbnb-unsplash-BJfOfnWy.jpg" 
+                         alt="Residencial Airbnb con diseño minimalista" 
+                         class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-teal-900 bg-opacity-75 text-white p-4">
+                        <h3 class="text-lg font-bold mb-2">Residencial Airbnb</h3>
+                        <p class="text-sm">Ubicación: Santo Domingo, Republica Dominicana</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-teal-900 dark:text-teal-50 mb-4">
+                    Sobre Residencial APT
+                </h2>
+                <p class="text-xl text-teal-700 dark:text-teal-200 max-w-3xl mx-auto">
+                    Transformando la gestión de residenciales con tecnología de vanguardia
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200">
+                        Innovación en Gestión Residencial
+                    </h3>
+                    <p class="text-teal-700 dark:text-teal-300 leading-relaxed">
+                        APT Manager nace de la necesidad de modernizar la administración de residenciales y apartamentos. Nuestra plataforma integra todas las herramientas necesarias para una gestión eficiente, desde el control de pagos hasta la reserva de áreas comunes.
+                    </p>
+                    <p class="text-teal-700 dark:text-teal-300 leading-relaxed">
+                        Con más de 5 años de experiencia en el sector inmobiliario, hemos desarrollado una solución que se adapta tanto a residenciales tradicionales como a propiedades destinadas a Airbnb, ofreciendo flexibilidad y control total.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="shield" class="h-5 w-5 text-teal-600"></i>
+                            <span class="text-teal-700 dark:text-teal-300">Seguridad Garantizada</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="smartphone" class="h-5 w-5 text-teal-600"></i>
+                            <span class="text-teal-700 dark:text-teal-300">App Móvil</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="wifi" class="h-5 w-5 text-teal-600"></i>
+                            <span class="text-teal-700 dark:text-teal-300">Sincronización en Tiempo Real</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="car" class="h-5 w-5 text-teal-600"></i>
+                            <span class="text-teal-700 dark:text-teal-300">Control de Parqueaderos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200">Nuestra Misión</h3>
+                    <p class="text-teal-700 dark:text-teal-300 leading-relaxed">
+                        Simplificar la vida de administradores y residentes mediante tecnología intuitiva y confiable. Creemos que la gestión residencial debe ser transparente, eficiente y accesible para todos.
+                    </p>
+
+                    <div class="bg-stone-50 dark:bg-gray-700 rounded-xl p-6 shadow-lg">
+                        <h4 class="text-lg font-semibold text-teal-800 dark:text-teal-200 mb-4">
+                            ¿Por qué elegir APT Manager?
+                        </h4>
+                        <ul class="space-y-3 text-teal-700 dark:text-teal-300">
+                            <li class="flex items-start space-x-2">
+                                <div class="w-2 h-2 bg-teal-600 rounded-full mt-2"></div>
+                                <span>Interfaz intuitiva y fácil de usar</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <div class="w-2 h-2 bg-teal-600 rounded-full mt-2"></div>
+                                <span>Soporte técnico 24/7 en español, ingles y fracés</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <div class="w-2 h-2 bg-teal-600 rounded-full mt-2"></div>
+                                <span>Actualizaciones constantes sin costo adicional</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <div class="w-2 h-2 bg-teal-600 rounded-full mt-2"></div>
+                                <span>Integración con sistemas de pago locales</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-stone-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-teal-900 dark:text-teal-50 mb-4">Contáctanos</h2>
+                <p class="text-xl text-teal-700 dark:text-teal-200 max-w-3xl mx-auto">
+                    ¿Listo para transformar la gestión de tu residencial? Estamos aquí para ayudarte
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-teal-800 dark:text-teal-200 mb-6">Información de Contacto</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="p-3 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                    <i data-lucide="phone" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-teal-800 dark:text-teal-200">Teléfono</p>
+                                    <p class="text-teal-600 dark:text-teal-400">+57 (1) 234-5678</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="p-3 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                    <i data-lucide="mail" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-teal-800 dark:text-teal-200">Email</p>
+                                    <p class="text-teal-600 dark:text-teal-400">contacto@aptmanager.com</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="p-3 bg-teal-100 dark:bg-teal-900 rounded-lg">
+                                    <i data-lucide="map-pin" class="h-6 w-6 text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-teal-800 dark:text-teal-200">Oficina</p>
+                                    <p class="text-teal-600 dark:text-teal-400">Carrera 11 #93-07, Paraiso, Barahora, Republica Dominicana</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-700 rounded-xl p-6 shadow-lg">
+                        <h4 class="text-lg font-semibold text-teal-800 dark:text-teal-200 mb-4">Horarios de Atención</h4>
+                        <div class="space-y-2 text-teal-700 dark:text-teal-300">
+                            <div class="flex justify-between">
+                                <span>Lunes - Viernes:</span>
+                                <span>8:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Sábados:</span>
+                                <span>9:00 AM - 2:00 PM</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Domingos:</span>
+                                <span>Cerrado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-teal-100 dark:border-gray-600 p-6">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-teal-800 dark:text-teal-200 mb-2">Solicita una Demo</h3>
+                        <p class="text-teal-600 dark:text-teal-400">
+                            Completa el formulario y te contactaremos en menos de 24 horas
+                        </p>
+                    </div>
+                    
+                    <form class="space-y-4" id="contact-form">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Nombre</label>
+                                <input type="text" name="nombre" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100" placeholder="Tu nombre">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Apellido</label>
+                                <input type="text" name="apellido" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100" placeholder="Tu apellido">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Email</label>
+                            <input type="email" name="email" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100" placeholder="tu@email.com">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Teléfono</label>
+                            <input type="tel" name="telefono" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100" placeholder="+57 300 123 4567">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Tipo de Propiedad</label>
+                            <select name="tipo_propiedad" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100">
+                                <option value="">Selecciona una opción</option>
+                                <option value="residencial_tradicional">Residencial Tradicional</option>
+                                <option value="apartamentos_airbnb">Apartamentos Airbnb</option>
+                                <option value="conjunto_mixto">Conjunto Mixto</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-teal-700 dark:text-teal-300 mb-2">Mensaje</label>
+                            <textarea name="mensaje" rows="4" required class="w-full px-3 py-2 border border-teal-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-600 dark:text-teal-100" placeholder="Cuéntanos sobre tu residencial y necesidades específicas..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">
+                            Solicitar Demo Gratuita
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-teal-900 dark:bg-gray-900 text-teal-50 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="building-2" class="h-8 w-8 text-teal-400"></i>
+                        <span class="text-xl font-bold">APT Manager</span>
+                    </div>
+                    <p class="text-teal-200 text-sm leading-relaxed">
+                        La plataforma más completa para la gestión de residenciales y apartamentos. Simplificamos la administración para que te enfoques en lo importante.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-teal-200 hover:text-white hover:bg-teal-800 p-2 rounded transition-colors">Facebook</a>
+                        <a href="#" class="text-teal-200 hover:text-white hover:bg-teal-800 p-2 rounded transition-colors">LinkedIn</a>
+                        <a href="#" class="text-teal-200 hover:text-white hover:bg-teal-800 p-2 rounded transition-colors">Twitter</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Producto</h4>
+                    <ul class="space-y-2 text-teal-200">
+                        <li><a href="#" class="hover:text-white transition-colors">Funcionalidades</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Precios</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Integraciones</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Soporte</h4>
+                    <ul class="space-y-2 text-teal-200">
+                        <li><a href="#" class="hover:text-white transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Documentación</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Tutoriales</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Empresa</h4>
+                    <ul class="space-y-2 text-teal-200">
+                        <li><a href="#" class="hover:text-white transition-colors">Sobre Nosotros</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Carreras</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Prensa</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-teal-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-teal-200 text-sm">© 2024 APT Manager. Todos los derechos reservados.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-teal-200 hover:text-white text-sm transition-colors">Política de Privacidad</a>
+                    <a href="#" class="text-teal-200 hover:text-white text-sm transition-colors">Términos de Servicio</a>
+                    <a href="#" class="text-teal-200 hover:text-white text-sm transition-colors">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Principal -->
+    <script src="./main.js"></script>
+</body>
+</html>
